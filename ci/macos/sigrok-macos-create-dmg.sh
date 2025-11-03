@@ -133,7 +133,7 @@ mv $ARTIFACT_TITLE.app/Contents/Frameworks/QtDBus.framework ./
 codesign --force --deep --sign - $ARTIFACT_TITLE.app
 
 # send them back
-mv ./Python.framework ./QtDBus.framework $$ARTIFACT_TITLE.app/Contents/Frameworks/
+mv ./Python.framework ./QtDBus.framework $ARTIFACT_TITLE.app/Contents/Frameworks/
 
 hdiutil create "${ARTIFACT_TITLE}-${ARTIFACT_VERSION}-${TARGET}.dmg" \
 	-volname "$ARTIFACT_TITLE $ARTIFACT_VERSION" \
