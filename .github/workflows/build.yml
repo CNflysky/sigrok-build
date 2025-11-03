@@ -579,8 +579,10 @@ jobs:
           source sigrok-build/ci/macos/sigrok-macos-init-toolchain.sh
           mkdir -p pulseview/build
           cd pulseview/build
+          sed -i s/serialization system/serialization/g ../CMakeLists.txt
           PKG_CONFIG_PATH=$P cmake \
             -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_DIR \
+            -DCMAKE_PREFIX_PATH=$(brew --prefix boost) \
             -DCMAKE_BUILD_TYPE=Debug \
             -DDISABLE_WERROR=FALSE \
             -DENABLE_TESTS=FALSE \
