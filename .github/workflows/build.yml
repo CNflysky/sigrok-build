@@ -508,7 +508,7 @@ jobs:
       (endsWith(github.repository, 'sigrok-build')))
 
     # See https://github.com/actions/runner-images/issues/9254
-    runs-on: macos-14
+    runs-on: macos-26
 
 # Note: For now, we only supply debug builds
 #    strategy:
@@ -728,7 +728,7 @@ jobs:
       (endsWith(github.repository, 'sigrok-build')))
 
     # See https://github.com/actions/runner-images/issues/9254
-    runs-on: macos-14
+    runs-on: macos-26
 
     env:
       TARGET: "arm"
