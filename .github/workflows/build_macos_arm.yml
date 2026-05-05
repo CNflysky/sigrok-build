@@ -3,6 +3,27 @@ name: PulseView macOS build for ARM
 on:
   workflow_dispatch:
 
+env:
+  # The path where the compiled packages will be installed.
+  INSTALL_DIR: "${{ github.workspace }}/sr"
+  # Git URL for the libserialport dependency
+  LIBSERIALPORT_REPO: "git://sigrok.org/libserialport"
+  # Git URL for the libsigrok dependency
+  LIBSIGROK_REPO: "git://sigrok.org/libsigrok"
+  # Git branch for the libsigrok dependency
+  LIBSIGROK_BRANCH: "master"
+  # Git URL for the libsigrokdecode dependency
+  LIBSIGROKDECODE_REPO: "git://sigrok.org/libsigrokdecode"
+  # Git URL for the sigrok-firmware dependency
+  SIGROK_FIRMWARE_REPO: "git://sigrok.org/sigrok-firmware"
+  # Git URL for the sigrok-firmware-fx2lafw dependency
+  SIGROK_FIRMWARE_FX2LAFW_REPO: "git://sigrok.org/sigrok-firmware-fx2lafw"
+  # Git URL for the sigrok-dumps dependency
+  SIGROK_DUMPS_REPO: "git://sigrok.org/sigrok-dumps"
+  # Misc commands
+  WGET: "wget -c --quiet"
+  GIT_CLONE: "git clone --depth=1"
+
 defaults:
   run:
     shell: bash
