@@ -1,0 +1,113 @@
+name: PulseView macOS build for ARM
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  
+  build_pulseview_macos_arm:
+    name: PulseView macOS build for ARM
+
+    if: |
+      ((endsWith(github.repository, 'pulseview')) ||
+      (endsWith(github.repository, 'sigrok-build')))
+
+    # See https://github.com/actions/runner-images/issues/9254
+    runs-on: macos-26
+
+# Note: For now, we only supply debug builds
+#    strategy:
+#      matrix:
+#        build_type:
+#          - { type: "Release", name: "release" }
+#          - { type: "Debug", name: "debug" }
+
+    env:
+      TARGET: "arm"
+      BREW_PYTHON_VERSION: "python@3"
+      BREW_QT_VERSION: "qt"
+      # Artifact infos
+      ARTIFACT_TITLE: "pulseview"
+      ARTIFACT_BIN_NAME: "pulseview"
+      ARTIFACT_VERSION: "NIGHTLY"
+
+    outputs:
+      pr_links: ${{ steps.pr_links.outputs.PR_LINKS }}
+
+    steps:
+      - name: Set artifact version to PR
+        if: (github.event_name == 'pull_request')
+        run: |
+          echo "ARTIFACT_VERSION=pr${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: |
+          brew install autoconf automake autoconf-archive pkg-config libtool \
+          libzip libusb libftdi hidapi nettle check doxygen swig \
+          glib glibmm@2.66 cmake boost sdcc gnu-sed $BREW_PYTHON_VERSION $BREW_QT_VERSION
+
+#      - name: Provide qt also in prefix directory as qt is using a keg
+#        run: |
+#          brew link -f $BREW_QT_VERSION
+
+      - name: Checkout sigrok-build
+        # Cannot use actions/checkout because it always checks out the calling actions' repo, not the one specified
+        run: |
+          git clone https://github.com/CNflysky/sigrok-build.git --depth 1
+
+      - name: Build dependencies
+        run: |
+          cd sigrok-build/ci/macos
+          source sigrok-macos-init-toolchain.sh
+          ./sigrok-macos-build-dependencies.sh
+
+      - name: Checkout sigrok's PulseView
+        # Check out default PV repository unless we're processing a pull request
+        uses: actions/checkout@v4
+        with:
+          # TODO: Clone from sigrok.org
+          repository: sigrokproject/pulseview
+          path: pulseview
+
+      - name: Checkout PulseView from PR
+        # Check out PV branch of the pull request we're processing
+        if: (github.event_name == 'pull_request')
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          path: pulseview
+          fetch-depth: 0
+
+      - name: Build PulseView
+        run: |
+          source sigrok-build/ci/macos/sigrok-macos-init-toolchain.sh
+          mkdir -p pulseview/build
+          cd pulseview/build
+          grep system ../CMakeLists.txt
+          PKG_CONFIG_PATH=$P cmake \
+            -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_DIR \
+            -DCMAKE_PREFIX_PATH=$(brew --prefix boost) \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DDISABLE_WERROR=FALSE \
+            -DENABLE_TESTS=FALSE \
+            ..
+          make $PARALLEL $V
+          make install $V
+
+      - name: Build DMG
+        run: |
+          cd sigrok-build/ci/macos
+          source sigrok-macos-init-toolchain.sh
+          ./sigrok-macos-create-dmg.sh
+
+      - name: Upload artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-pulseview-arm-macos
+          path: sigrok-build/ci/macos/pulseview*.dmg
