@@ -1,9 +1,7 @@
 name: Build sigrok artifacts
 
 on:
-  push:
   workflow_dispatch:
-  workflow_call:
 
 defaults:
   run:
