@@ -109,14 +109,13 @@ jobs:
           source sigrok-build/ci/macos/sigrok-macos-init-toolchain.sh
           mkdir -p pulseview/build
           cd pulseview/build
-          grep system ../CMakeLists.txt
+          echo "add_definitions(-DQT_NO_USE_NODISCARD_FILE_OPEN)" >> ../CMakeLists.txt
           PKG_CONFIG_PATH=$P cmake \
             -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_DIR \
             -DCMAKE_PREFIX_PATH=$(brew --prefix boost) \
             -DCMAKE_BUILD_TYPE=Debug \
             -DDISABLE_WERROR=FALSE \
             -DENABLE_TESTS=FALSE \
-            -DQT_NO_USE_NODISCARD_FILE_OPEN=1 \
             ..
           make $PARALLEL $V
           make install $V
