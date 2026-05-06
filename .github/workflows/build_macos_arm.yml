@@ -55,7 +55,7 @@ jobs:
       - name: Checkout sigrok-build
         # Cannot use actions/checkout because it always checks out the calling actions' repo, not the one specified
         run: |
-          git clone https://github.com/${{ github.event.repository.owner }}/sigrok-build.git --depth 1
+          git clone https://github.com/${{ github.repository_owner }}/sigrok-build.git --depth 1
 
       - name: Build dependencies
         run: |
