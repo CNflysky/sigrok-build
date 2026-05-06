@@ -75,7 +75,7 @@ jobs:
         run: |
           source sigrok-build/ci/macos/sigrok-macos-init-toolchain.sh
           cd pulseview
-          git am ~/sigrok-build/0001-fix-build-with-QT-6.11.patch
+          git am ../sigrok-build/0001-fix-build-with-QT-6.11.patch
           PKG_CONFIG_PATH=$P cmake -B build \
             -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_DIR \
             -DCMAKE_PREFIX_PATH=$(brew --prefix boost) \
