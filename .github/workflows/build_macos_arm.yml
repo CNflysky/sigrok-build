@@ -83,7 +83,7 @@ jobs:
             -DDISABLE_WERROR=FALSE \
             -DENABLE_TESTS=FALSE
           cmake --build build
-          cmake --install
+          cmake --install build
 
       - name: Build DMG
         run: |
