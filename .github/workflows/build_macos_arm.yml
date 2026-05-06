@@ -116,7 +116,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Debug \
             -DDISABLE_WERROR=FALSE \
             -DENABLE_TESTS=FALSE \
-            -DQT_NO_USE_NODISCARD_FILE_OPEN \
+            -DQT_NO_USE_NODISCARD_FILE_OPEN=TRUE \
             ..
           make $PARALLEL $V
           make install $V
