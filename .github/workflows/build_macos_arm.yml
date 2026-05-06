@@ -50,7 +50,7 @@ jobs:
     env:
       TARGET: "arm"
       BREW_PYTHON_VERSION: "python@3"
-      BREW_QT_VERSION: "qt@6.9.3"
+      BREW_QT_VERSION: "qt"
       # Artifact infos
       ARTIFACT_TITLE: "pulseview"
       ARTIFACT_BIN_NAME: "pulseview"
@@ -116,6 +116,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Debug \
             -DDISABLE_WERROR=FALSE \
             -DENABLE_TESTS=FALSE \
+            -DQT_NO_USE_NODISCARD_FILE_OPEN \
             ..
           make $PARALLEL $V
           make install $V
